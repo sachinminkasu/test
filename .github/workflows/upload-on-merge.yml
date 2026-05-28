@@ -25,6 +25,8 @@ jobs:
           ARCHIVE="${REPO}-${SHA}.tar.gz"
           git archive --format=tar.gz --output="${ARCHIVE}" HEAD
           echo "ARCHIVE=${ARCHIVE}" >> "$GITHUB_ENV"
+          S3_URL="s3://${{ secrets.S3_BUCKET_NAME }}/${REPO}/${ARCHIVE}"
+          echo "S3_URL=${S3_URL}" >> "$GITHUB_ENV"
 
       # ── Option A: Upload to AWS S3 ────────────────────────────────────────
       - name: Configure AWS credentials
@@ -36,4 +38,4 @@ jobs:
 
       - name: Upload to S3
         run: |
-          aws s3 cp "$ARCHIVE" s3://${{ secrets.BACKUP_AWS_S3_BUCKET_NAME }}/"$REPO"/"$ARCHIVE"
+          aws s3 cp "$ARCHIVE" "$S3_URL"
